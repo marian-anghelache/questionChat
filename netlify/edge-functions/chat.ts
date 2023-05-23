@@ -3,9 +3,9 @@ import { getChatStream, sanitizeMessages } from "../../lib/edge/openai.ts";
 
 import { appConfig } from "../../config.edge.ts";
 
-if (!appConfig.OPENAI_API_KEY || !appConfig.systemPrompt) {
+if (!appConfig.OPENAI_API_KEY) {
   throw new Error(
-    "OPENAI_API_KEY and systemPrompt must be set in config.edge.ts"
+    "OPENAI_API_KEY must be set in config.edge.ts"
   );
 }
 
@@ -13,13 +13,9 @@ export default async function handler(
   request: Request,
   context: Context
 ): Promise<Response> {
-  const prompt =
-    typeof appConfig.systemPrompt === "function"
-      ? await appConfig.systemPrompt(request, context)
-      : appConfig.systemPrompt;
-
   try {
     const data = await request.json();
+    const prompt = data.prompt
 
     // This only trims the size of the messages, to avoid abuse of the API.
     // You should do any extra validation yourself.

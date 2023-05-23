@@ -4,10 +4,27 @@ import { useChat } from "../hooks/use-chat";
 import { ChatMessage } from "../components/ChatMessage";
 import { appConfig } from "../../config.browser";
 import { Welcome } from "../components/Welcome";
+import QuestionsModal from "../components/QuestionsModal";
+import { LOCAL_STORAGE_KEY } from "../components/common/logic/constants";
 
 export default function Index() {
   // The content of the box where the user is typing
   const [message, setMessage] = useState<string>("");
+  const [questions, setQuestions] = useState<Record<string, string>>({})
+
+  const [showSetQuestionsModal, setShowSetQuestionsModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    const localStorageValues = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (localStorageValues) {
+      try {
+        const values = JSON.parse(localStorageValues) as {prompt: string, question1: string, question2: string, question3: string}
+        setQuestions({question1: values.question1, question2: values.question2, question3: values.question3})
+      } catch(error) {
+        console.log('Cannot parse localstorage: ', localStorageValues)
+      }
+    }
+  }, [])
 
   // This hook is responsible for managing the chat and communicating with the
   // backend
@@ -42,6 +59,9 @@ export default function Index() {
     focusInput();
   }, [state]);
 
+  const handleShowQuestionsModal = () => setShowSetQuestionsModal(true)
+  const handleHideQuestionsModal = () => setShowSetQuestionsModal(false)
+
   return (
     <App title="Ask Me Anything">
       <main className="bg-white md:rounded-lg md:shadow-md p-6 w-full h-full flex flex-col">
@@ -49,18 +69,20 @@ export default function Index() {
           <div className="flex flex-col space-y-4">
             {chatHistory.length === 0 ? (
               <>
-                <Welcome />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {appConfig.samplePhrases.map((phrase) => (
-                    <button
-                      key={phrase}
-                      onClick={() => sendMessage(phrase, chatHistory)}
-                      className="bg-gray-100 border-gray-300 border-2 rounded-lg p-4"
-                    >
-                      {phrase}
-                    </button>
-                  ))}
+                <Welcome handleSetQuestionsClick={handleShowQuestionsModal}/>
+                {questions && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {Object.keys(questions).map((questionKey) => {
+                    const phrase = questions[questionKey] as string
+                    return <button
+                    key={phrase}
+                    onClick={() => sendMessage(phrase, chatHistory)}
+                    className="bg-gray-100 border-gray-300 border-2 rounded-lg p-4"
+                  >
+                    {phrase}
+                  </button>
+                  })}
                 </div>
+                }
                 <div className="flex justify-center">
                   <p className="text-sm text-gray-500 mt-5">
                   
@@ -130,6 +152,7 @@ export default function Index() {
           </form>
         </section>
       </main>
+      <QuestionsModal isOpen={showSetQuestionsModal} handleClose={handleHideQuestionsModal} updateQuestions={setQuestions}/>
     </App>
   );
 }

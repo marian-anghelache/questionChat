@@ -1,6 +1,7 @@
 import { fetchEventSource } from "@fortaine/fetch-event-source";
 import { useState, useMemo } from "react";
 import { appConfig } from "../../config.browser";
+import { LOCAL_STORAGE_KEY } from "../components/common/logic/constants";
 
 const API_PATH = "/api/chat";
 interface ChatMessage {
@@ -56,60 +57,74 @@ export function useChat() {
       { role: "user", content: message } as const,
     ];
 
-    setChatHistory(newHistory);
-    const body = JSON.stringify({
-      // Only send the most recent messages. This is also
-      // done in the serverless function, but we do it here
-      // to avoid sending too much data
-      messages: newHistory.slice(-appConfig.historyLength),
-    });
+    const localStorageValues = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (!localStorageValues) {
+      console.log('Error sending message, missing localStorageValues')
+      return
+    }
 
-    // This is like an EventSource, but allows things like
-    // POST requests and headers
-    fetchEventSource(API_PATH, {
-      body,
-      method: "POST",
-      signal: abortController.signal,
-      onclose: () => {
-        setState("idle");
-      },
-      onmessage: (event) => {
-        switch (event.event) {
-          case "delta": {
-            // This is a new word or chunk from the AI
-            setState("loading");
-            const message = JSON.parse(event.data);
-            if (message?.role === "assistant") {
-              chatContent = "";
-              return;
+    try {
+
+      const prompt = JSON.parse(localStorageValues)?.prompt
+
+      setChatHistory(newHistory);
+      const body = JSON.stringify({
+        // Only send the most recent messages. This is also
+        // done in the serverless function, but we do it here
+        // to avoid sending too much data
+        messages: newHistory.slice(-appConfig.historyLength),
+        prompt
+      });
+
+      // This is like an EventSource, but allows things like
+      // POST requests and headers
+      fetchEventSource(API_PATH, {
+        body,
+        method: "POST",
+        signal: abortController.signal,
+        onclose: () => {
+          setState("idle");
+        },
+        onmessage: (event) => {
+          switch (event.event) {
+            case "delta": {
+              // This is a new word or chunk from the AI
+              setState("loading");
+              const message = JSON.parse(event.data);
+              if (message?.role === "assistant") {
+                chatContent = "";
+                return;
+              }
+              if (message.content) {
+                chatContent += message.content;
+                setCurrentChat(chatContent);
+              }
+              break;
             }
-            if (message.content) {
-              chatContent += message.content;
-              setCurrentChat(chatContent);
+            case "open": {
+              // The stream has opened and we should recieve
+              // a delta event soon. This is normally almost instant.
+              setCurrentChat("...");
+              break;
             }
-            break;
+            case "done": {
+              // When it's done, we add the message to the history
+              // and reset the current chat
+              setChatHistory((curr) => [
+                ...curr,
+                { role: "assistant", content: chatContent } as const,
+              ]);
+              setCurrentChat(null);
+              setState("idle");
+            }
+            default:
+              break;
           }
-          case "open": {
-            // The stream has opened and we should recieve
-            // a delta event soon. This is normally almost instant.
-            setCurrentChat("...");
-            break;
-          }
-          case "done": {
-            // When it's done, we add the message to the history
-            // and reset the current chat
-            setChatHistory((curr) => [
-              ...curr,
-              { role: "assistant", content: chatContent } as const,
-            ]);
-            setCurrentChat(null);
-            setState("idle");
-          }
-          default:
-            break;
-        }
-      },
-    });
+        },
+      });
+    } catch (e) {
+      console.log('Error sending message, invalid localStorageValues', localStorageValues)
+    }
   };
 
   return { sendMessage, currentChat, chatHistory, cancel, clear, state };
