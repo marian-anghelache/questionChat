@@ -16,6 +16,8 @@ export default async function handler(
   try {
     const data = await request.json();
     const prompt = data.prompt
+    
+    console.log('prompt is: ', prompt)
 
     // This only trims the size of the messages, to avoid abuse of the API.
     // You should do any extra validation yourself.
