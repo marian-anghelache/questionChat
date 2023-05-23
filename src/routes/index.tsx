@@ -6,6 +6,8 @@ import { appConfig } from "../../config.browser";
 import { Welcome } from "../components/Welcome";
 import QuestionsModal from "../components/QuestionsModal";
 import { LOCAL_STORAGE_KEY } from "../components/common/logic/constants";
+import { prompt as defaultPrompt, samplePhrases } from "../../prompts/movie-critic";
+
 
 export default function Index() {
   // The content of the box where the user is typing
@@ -23,6 +25,18 @@ export default function Index() {
       } catch(error) {
         console.log('Cannot parse localstorage: ', localStorageValues)
       }
+    } else {
+      const questions = {
+        question1: samplePhrases[0],
+        question2: samplePhrases[1],
+        question3: samplePhrases[2]
+      }
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({
+        ...questions,
+        prompt: defaultPrompt
+      }))
+
+      setQuestions(questions)
     }
   }, [])
 

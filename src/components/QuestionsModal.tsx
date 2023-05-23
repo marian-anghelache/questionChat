@@ -1,6 +1,7 @@
 import React, { ChangeEvent, ChangeEventHandler, FC, useEffect, useState } from 'react'
 import Modal from './common/Modal'
 import { LOCAL_STORAGE_KEY } from './common/logic/constants'
+import { prompt as defaultPrompt, samplePhrases } from "../../prompts/movie-critic";
 
 interface IQuestionsModal {
     isOpen: boolean,
@@ -23,6 +24,14 @@ const QuestionsModal: FC<IQuestionsModal> = ({isOpen, handleClose, updateQuestio
       } catch(error) {
         console.log('Cannot parse localstorage: ', localQuestionsAndPrompt)
       }
+    } else {
+      setQuestions({
+        question1: samplePhrases[0],
+        question2: samplePhrases[1],
+        question3: samplePhrases[2]
+      })
+
+      setPrompt(defaultPrompt)
     }
   }, [isOpen])
 
