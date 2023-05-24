@@ -6,7 +6,7 @@ import { appConfig } from "../../config.browser";
 import { Welcome } from "../components/Welcome";
 import QuestionsModal from "../components/QuestionsModal";
 import { LOCAL_STORAGE_KEY } from "../components/common/logic/constants";
-import { prompt as defaultPrompt, samplePhrases } from "../../prompts/movie-critic";
+import { prompt as defaultPrompt, samplePhrases } from "../../prompts/law-expert.ts";
 
 
 export default function Index() {
@@ -77,7 +77,7 @@ export default function Index() {
   const handleHideQuestionsModal = () => setShowSetQuestionsModal(false)
 
   return (
-    <App title="Ask Me Anything">
+    <App title="LawAssist - Your trusted virtual legal assistant">
       <main className="bg-white md:rounded-lg md:shadow-md p-6 w-full h-full flex flex-col">
         <section className="overflow-y-auto flex-grow mb-4 pb-8">
           <div className="flex flex-col space-y-4">
