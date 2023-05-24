@@ -14,7 +14,7 @@ export const Welcome: React.FC<IWelcome> = ({handleSetQuestionsClick}) => (
         <Cog6ToothIcon width={24}/>
       </button>
     </div>
-    <h1 className="text-2xl font-bold mb-2">Welcome to LawAssist, your trusted virtual legal assistant.</h1>
+    <h1 className="text-2xl font-bold mb-2">LawAssist - Your trusted virtual legal assistant</h1>
     <p>We understand that navigating the complexities of the legal world can be overwhelming. That's why we're here to provide you with personalized guidance and support.<br/><br/>
     Whether you have questions about legal procedures, need assistance with legal documents, or seek general legal advice, our intelligent chatbot is ready to help.<br><br/>
     Get started now and experience the convenience of having a reliable legal companion at your fingertips.
