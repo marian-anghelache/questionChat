@@ -15,7 +15,7 @@ export const Welcome: React.FC<IWelcome> = ({handleSetQuestionsClick}) => (
       </button>
     </div>
     <h1 className="text-2xl font-bold mb-2">🤖 Hello</h1>
-    <p>In this demo I am an expert in movie reviews, so feel free to ask me about movies!
+    <p>In this demo I am a medical expert in diabetes, so feel free to ask me anything about diabetes!
     </p>
     <p>
     </p>
