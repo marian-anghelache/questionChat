@@ -28,7 +28,7 @@ export const appConfig: AppConfig = {
   // This can be a plain string if you'd prefer, or you can use
   // information from the request or context to generate it.
   systemPrompt: (_req, context) => `${prompt}
-Respond with valid markdown. Put movie names in bold. Knowledge cutoff September 2021.
+Respond with valid markdown. Put laws in bold. Knowledge cutoff September 2021.
 Current date: ${new Date().toDateString()}.
 User location: ${context.geo.city}, ${context.geo.country}`,
 };
