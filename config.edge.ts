@@ -1,6 +1,6 @@
 import type { AppConfig } from "./lib/edge/types.ts";
 
-import { prompt } from "./prompts/heath-expert.ts";
+import { prompt } from "./prompts/law-expert.ts";
 //import { prompt } from "./prompts/movie-critic.ts";
 //import { prompt } from "./prompts/tour-guide.ts";
 

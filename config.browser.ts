@@ -1,4 +1,4 @@
-import { samplePhrases } from "./prompts/heath-expert.ts";
+import { samplePhrases } from "./prompts/law-expert.ts";
 // import { samplePhrases } from "./prompts/movie-critic";
 // import { samplePhrases } from "./prompts/tour-guide";
 
