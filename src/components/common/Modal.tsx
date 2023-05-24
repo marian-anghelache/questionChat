@@ -39,7 +39,7 @@ const Modal: FC<IModal> = ({isOpen, handleClose, children}) => {
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6">
                 <div>
                     <Dialog.Title as="h1" className="text-2xl font-semibold leading-6 text-gray-900 mb-6">
-                      Update the prompt & questions
+                      LawAssist Settings
                     </Dialog.Title>
                     <div className="mt-2">
                       {children}

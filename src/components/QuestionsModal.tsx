@@ -58,7 +58,7 @@ const QuestionsModal: FC<IQuestionsModal> = ({isOpen, handleClose, updateQuestio
         <div className='border-b py-6'>
             <div >
                 <label htmlFor="about" className="block text-sm font-medium leading-6 text-gray-900">
-                Context
+                Context & Instructions
                 </label>
                 <div className="mt-2">
                 <textarea
